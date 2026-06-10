@@ -16,8 +16,19 @@ webdb.ensure_demo_db()
 
 app = FastAPI(title="ParagonEdu Web")
 app.add_middleware(SessionMiddleware, secret_key=os.environ.get("PARAGON_SECRET", "dev-secret-change-in-production"))
-app.mount("/static", StaticFiles(directory=os.path.join(BASE, "static")), name="static")
-templates = Jinja2Templates(directory=os.path.join(BASE, "templates"))
+
+# Locate templates/static whether they're in subfolders (normal) OR loose at the
+# top level (e.g. after a flattened GitHub web upload). This keeps the app working
+# in both layouts without re-uploading.
+_TEMPLATES_DIR = os.path.join(BASE, "templates")
+if not os.path.isfile(os.path.join(_TEMPLATES_DIR, "base.html")) and os.path.isfile(os.path.join(BASE, "base.html")):
+    _TEMPLATES_DIR = BASE
+_STATIC_DIR = os.path.join(BASE, "static")
+if not os.path.isfile(os.path.join(_STATIC_DIR, "style.css")) and os.path.isfile(os.path.join(BASE, "style.css")):
+    _STATIC_DIR = BASE
+
+app.mount("/static", StaticFiles(directory=_STATIC_DIR), name="static")
+templates = Jinja2Templates(directory=_TEMPLATES_DIR)
 
 
 def current_user(request: Request):
