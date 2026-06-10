@@ -1,0 +1,284 @@
+ParagonEdu Web - Phase 1 (Foundation)
+=====================================
+
+WHAT THIS IS
+  The beginning of the browser version of ParagonEdu Suite. Phase 1 has:
+  login (matches your desktop accounts), a dashboard with live counts, and
+  the Students module (searchable, class-filtered list + detail page).
+  It reuses your desktop app's database format - point it at a real
+  school_data.db and it shows that school's students.
+
+ONE-TIME SETUP (on the PC that will run it)
+  1. Make sure Python is installed (you already have it).
+  2. Put all these files in one folder, e.g. C:\Users\USER\Desktop\ParagonWeb
+       app.py  webdb.py  requirements.txt
+       templates\   (the .html files)
+       static\style.css
+  3. Install the web libraries (one time):
+       pip install fastapi "uvicorn[standard]" jinja2 python-multipart itsdangerous --break-system-packages
+
+RUN IT
+  In Command Prompt, from the folder:
+       cd C:\Users\USER\Desktop\ParagonWeb
+       python -m uvicorn app:app --host 0.0.0.0 --port 8000
+  Then open a browser to:  http://localhost:8000
+  On first run it creates a demo database so you can log in immediately:
+       Username: admin    Password: admin123   (role: Administrator)
+
+USE YOUR REAL SCHOOL DATA
+  Point it at an existing ParagonEdu database before starting:
+       set PARAGON_DB=C:\Users\USER\AppData\Local\ParagonEduSuite\school_data.db
+       python -m uvicorn app:app --host 0.0.0.0 --port 8000
+  Now it shows that school's real students, and existing logins work
+  (case-insensitive, same as the desktop app).
+
+OTHER PCs ON THE SAME NETWORK
+  Because it runs with --host 0.0.0.0, other devices on the same wifi can
+  reach it at  http://<this-pc-ip>:8000  (find the IP with: ipconfig).
+
+WHAT'S NEXT (future phases)
+  Phase 2: Scores entry (with the class-subjects rule we built).
+  Phase 3: Report cards / results view (for parents & students online).
+  Phase 4: Fees, then the rest - each module rebuilt to match the desktop.
+  Then: move to PostgreSQL + proper hosting for many schools online.
+
+NOTE
+  This is a SEPARATE project from your desktop app. Keep it in its own
+  folder. The desktop app keeps working exactly as before; this grows
+  alongside it until the web version is complete.
+
+------------------------------------------------------------
+PHASE 2 ADDED: Scores + Results
+------------------------------------------------------------
+  - Score Entry (admin/teacher): pick a class+student, enter CA1/CA2/Exam,
+    save. Subjects shown follow the class-subjects rule.
+  - Results (everyone): a full result sheet - subjects, totals, grades,
+    average, overall grade.
+      * Admins/teachers can view ANY student's result.
+      * A student logs in and sees ONLY their own result.
+  Demo student login (demo DB):  role Student, username PS/2025/002, password akanni
+
+------------------------------------------------------------
+PHASE 3 ADDED: Fees (admin / bursar only)
+------------------------------------------------------------
+  - Fees overview: every student's due / paid / balance for the current
+    term, with term totals. Owing shown in red, "Paid up" in green.
+  - Student fee page: the breakdown + a "Record a payment" form (amount,
+    method, date, note) that updates the balance, plus payment history.
+  - Balances follow the same term-matching rule as the desktop debtors
+    page (current term; class names matched flexibly e.g. K.G 1 = KG 1).
+  - Validation: amount must be a positive number; bad entries save nothing.
+  - Students/teachers cannot see fees - admin/bursar only.
+
+------------------------------------------------------------
+PHASE 4 ADDED: Enrollment + PDFs
+------------------------------------------------------------
+  NEW LIBRARY NEEDED (one time):
+      python -m pip install reportlab --break-system-packages
+
+  - Enroll new students:  Students page -> "+ Enroll student" (admin/bursar).
+    Suggests the next admission number; add name, class, gender, parent, etc.
+  - Edit a student:  open a student -> "Edit".
+  - Admission form PDF:  open a student -> "Admission form PDF".
+  - Report card PDF:  open a result -> "Download report card" (a student can
+    download only their OWN; admin/teacher any).
+  - Broadsheet:  sidebar -> "Broadsheet" -> pick a class -> view the whole-class
+    grid (totals, averages, positions) and "Download PDF" (landscape).
+
+------------------------------------------------------------
+ADDED: Send result to parent via WhatsApp
+------------------------------------------------------------
+  On a student's result page, admin/teacher now sees:
+    - "Download report card" (the PDF)
+    - "Send to parent (WhatsApp)" - opens WhatsApp with a ready message:
+        greeting, each subject + grade, totals, and a link to the report PDF.
+      The parent's phone is auto-formatted to international (e.g. 0803... ->
+      2348...). If a student has no parent phone, the button is hidden.
+  NOTE: the PDF link in the WhatsApp message only opens for the parent once
+  the app is hosted online (a public address). On your local PC it points to
+  localhost, which only works on that PC/LAN. This becomes fully useful after
+  the "get it online" step.
+
+------------------------------------------------------------
+ADDED: Full report card (logo + affective/psychomotor + comments)
+------------------------------------------------------------
+  The report card PDF now has:
+    - School LOGO at top-left.  TO ADD YOURS: put your logo image at
+        ParagonWeb\ParagonWeb\static\logo.png   (png or jpg named logo.*)
+      If no logo file is present, the report still works (just no image).
+    - Cognitive (academic) subjects table (as before).
+    - Affective Domain + Psychomotor Domain tables (standard Nigerian traits,
+      rated 1-5).
+    - Class Teacher's and Head Teacher's comments.
+
+  ENTER traits & comments per student:
+    Results -> open a student -> "Traits & Comments" -> tick ratings 1-5 for
+    each trait, type the two comments, Save.  They then print on the report.
+  If you don't enter them, the report shows "-" for ratings and blank comment
+  lines (so you can still fill by hand).
+
+------------------------------------------------------------
+UPDATED: Comments are now AUTO-generated (like the desktop app)
+------------------------------------------------------------
+  - Comments are auto-filled from the pupil's average (Excellent / Very Good /
+    Good / Fair / Weak / Poor bands), for both Class Teacher and Head Teacher.
+  - On the report card, auto comments appear even if you never open the Traits
+    page - so every result has comments by default.
+  - You can still open "Traits & Comments", edit the auto text, and Save - your
+    edited comment then replaces the auto one on that pupil's report.
+
+------------------------------------------------------------
+PHASE 5 ADDED: THEORY EXAMS (type answers, on-screen marking, review)
+------------------------------------------------------------
+  TEACHER/ADMIN (sidebar -> "Theory Exams"):
+    - "+ New theory exam": title, subject, class, duration, mode, instructions.
+        mode = "Type answers on screen"  OR  "Hybrid (read on screen, write on paper)".
+    - Add questions with marks + an optional model answer. English passages,
+      lexis & structures with TITLES are supported (line breaks preserved).
+    - "Scripts": see who submitted; "Mark" opens the on-screen marking page -
+      read each typed answer, award marks (capped to the question's max), add a
+      note, Save & finalize -> computes the total.
+  STUDENT (sidebar -> "Theory Exams"):
+    - Sees exams for their class. "Start" opens a TIMED exam: live countdown,
+      types answers, auto-submits when time hits 0.
+    - After the teacher marks it, "View script" shows their answers, the score,
+      and the teacher's notes.
+  HYBRID mode: questions show on screen with the countdown; no typing box -
+    students write on paper and submit to the teacher.
+
+  STILL TO COME (need hosting first): image upload in questions/answers, and
+  math-expression input/rendering. Special characters & line-broken passages
+  already work today.
+
+------------------------------------------------------------
+PHASE 6 ADDED: MCQ CBT (JAMB / WAEC / NECO / School objective tests)
+------------------------------------------------------------
+  Sidebar -> "CBT (Objectives)".
+  TEACHER/ADMIN:
+    - Question Bank: add A-D questions per subject, per exam type
+      (School / WAEC / NECO / JAMB). Each exam type has its own bank.
+    - "+ New CBT test": pick exam type (presets fill sensible defaults -
+      JAMB = 4 subjects/120 min, WAEC/NECO = 50Q/60 min, School = flexible),
+      choose subjects, questions-per-subject, duration.
+    - OPTIONAL results link: set a test to fill CA1 / CA2 / Exam for an
+      academic subject. After students finish, open the test's "Scores" and
+      click "Send to score entry" -> the CBT % is SCALED to that field's max
+      and written into the result/report card (teacher-confirmed, not auto).
+  STUDENT:
+    - Sees CBT tests for their class. "Start" = timed objective test with
+      A-D options and a live countdown; auto-submits at 0; auto-scored
+      instantly; sees score + percentage.
+
+  IMPORT YOUR DESKTOP QUESTIONS:
+    On the Question Bank page click "Import from desktop app". It pulls in:
+      - cbt_questions  -> the School bank (subject names resolved automatically)
+      - exam_questions -> JAMB / WAEC / NECO banks (by their exam_type; UTME -> JAMB)
+    Duplicates are skipped, so you can run it again safely after adding more on
+    the desktop. (Run the web app with PARAGON_DB pointed at your real database
+    so it can see the desktop questions.)
+
+------------------------------------------------------------
+ADDED: "Start CBT Exam" on the staff sidebar
+------------------------------------------------------------
+  Sidebar -> "Start CBT Exam" (staff only). Pick any CBT test, then:
+    - Preview: see all its questions with the CORRECT answers marked in green
+      (great for checking a test before students take it).
+    - Take: sit the test yourself (timed + scored) to try it out. Staff
+      practice attempts are kept separate from students' real attempts and
+      can be retaken.
+
+------------------------------------------------------------
+PHASE 7 ADDED: AI Question Generator (local, scheme-driven - no API key)
+------------------------------------------------------------
+  Sidebar -> "AI Generator" (staff). Paste a SCHEME OF WORK (one topic per
+  line; "Week 1:", numbering and bullets are stripped automatically). For each
+  topic it builds:
+    - MCQ (A-D) pulled from your question bank and varied (option order
+      shuffled, correct answer tracked), matched to the topic by keywords.
+    - Theory questions: related ones from your theory bank, topped up with
+      scaffold prompts around the topic (with marks).
+  Tick "keep" on the ones you want and click "Save kept questions to bank":
+    - MCQ go into the chosen exam-type bank.
+    - Theory go into a new "Generated Theory - <subject>" theory exam.
+  It works fully OFFLINE from your existing questions (no API key). The richer
+  your bank (import your desktop questions first!), the better it generates.
+  If/when you add an Anthropic API key + hosting later, true generative AI can
+  be layered on top of this same page.
+
+------------------------------------------------------------
+UPDATED: Visual refresh
+------------------------------------------------------------
+  - Sidebar now has a deep navy->teal gradient background (was white), with
+    larger BOLD text and a gold highlight on the active page.
+  - The top-left mark now shows your SCHOOL LOGO. Put your logo image at
+        ParagonWeb\ParagonWeb\static\logo.png
+    (If the file is missing it falls back to a "P".)  This is the SAME logo
+    file used on the report-card PDF, so one file covers both.
+  - Header now reads "Powered by Paragon Smart Learning Technologies Limited".
+
+------------------------------------------------------------
+PHASE 8 ADDED: FINANCE SUITE (admin/bursar only)
+------------------------------------------------------------
+  Sidebar "Finance" now has Fees, Debtors & Arrears, Expenses, Accounts & Report.
+
+  DEBTORS & ARREARS (/debtors):
+    - Every student who owes, with TWO separate columns:
+        "This term" = current term outstanding
+        "Arrears"   = unpaid balances carried from PAST terms (same session)
+    - Term totals at top; "Remind" opens a WhatsApp message to the parent with
+      the breakdown (arrears + this term + total).
+
+  EXPENSES (/expenses):
+    - Record school spending: date, category (Salaries, Supplies, Maintenance,
+      Utilities, Transport, Rent, Feeding, Examination, Others), amount, paid-to,
+      method, description. Filter by category; delete rows. Term totals + top
+      categories shown as stats.
+
+  ACCOUNTS & REPORT (/accounts):
+    - Income (fees collected) vs Expenses = Net balance, for the current term.
+    - Expected fees + still-outstanding for context, expenses by category.
+    - "Download report PDF" = a clean Financial Report (with your logo).
+
+  EXPENSES ARE NOW UNIFIED WITH THE DESKTOP:
+    The web Expenses module reads and writes your real desktop `expenses` table
+    (title, amount, category, expense_date, session, term, payment_method,
+    vendor, receipt_no, recorded_by, note). Categories come from your
+    `expense_categories` table. So an expense recorded on EITHER app shows up in
+    BOTH, and the Accounts report counts them all. (Run the web app with
+    PARAGON_DB pointed at your real database.)
+
+------------------------------------------------------------
+UPDATED: Bold 3D header + full school details
+------------------------------------------------------------
+  The header now shows a bold, 3D-extruded school name plus your school's
+  details from setup: motto, address, contact number(s) and email, then the
+  "Powered by..." line and a gold accent.
+  The details are read from your school_info record: name, motto, address,
+  phone, email and website all appear (locked to your real column names).
+
+  LOGO NOW AUTO-LOADS: the app first looks for static\logo.png; if it's not
+  there it uses the logo_path saved in your setup (your desktop logo). So your
+  logo can appear without manually copying it - though static\logo.png still
+  works and overrides if present. This same logo is used on the report-card and
+  financial-report PDFs too.
+
+------------------------------------------------------------
+UPDATED: Bigger logo + page footer
+------------------------------------------------------------
+  - The header logo is larger.
+  - Every page now ends with a footer:
+      "Powered by Paragon Smart Learning Technologies Limited | 08131374585"
+    (The "Powered by" line was moved out of the header into this footer.)
+
+------------------------------------------------------------
+DEMO DATASET + DEFAULT LOGINS  (build_demo.py)
+------------------------------------------------------------
+  Running "python build_demo.py" builds a rich demo database for the school
+  "ABC Group of Schools (DEMO)" with a fake address/contact and lots of sample
+  data (29 students, scores, fees, debtors/arrears, expenses, CBT + theory).
+  DEFAULT LOGINS (choose the matching role in the dropdown):
+     Administrator :  admin    / admin123
+     Staff/Teacher :  teacher  / teacher123
+     Student       :  student  / student123
+  NOTE: build_demo.py only builds if the database does not already exist, so it
+  never wipes real data. Delete school_data.db first if you want to rebuild it.

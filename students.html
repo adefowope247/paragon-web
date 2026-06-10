@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% set active='students' %}
+{% block title %}Students &middot; ParagonEdu{% endblock %}
+{% block content %}
+<div class="result-head">
+  <div>
+    <h1 class="page-title">Students</h1>
+    <p class="page-sub">{{ students|length }} shown{% if selected_class and selected_class!='All' %} in {{ selected_class }}{% endif %}</p>
+  </div>
+  {% if user.role in ['admin','bursar'] %}<a class="btn btn-gold" href="/students/new">+ Enroll student</a>{% endif %}
+</div>
+
+<form class="toolbar" method="get" action="/students">
+  <input type="text" name="q" placeholder="Search name or admission no" value="{{ search }}">
+  <select name="class_level" onchange="this.form.submit()">
+    {% for c in classes %}
+      <option value="{{ c }}" {{ 'selected' if c==selected_class }}>{{ c }}</option>
+    {% endfor %}
+  </select>
+  <button class="btn btn-primary" type="submit">Search</button>
+</form>
+
+{% if students %}
+<table>
+  <thead><tr><th>Name</th><th>Admission No</th><th>Class</th><th>Gender</th><th>Parent phone</th></tr></thead>
+  <tbody>
+  {% for s in students %}
+    <tr onclick="location.href='/students/{{ s.id }}'" style="cursor:pointer">
+      <td><a href="/students/{{ s.id }}">{{ s.full_name }}</a></td>
+      <td>{{ s.admission_no or "—" }}</td>
+      <td><span class="badge">{{ s.class_level or "—" }}</span></td>
+      <td>{{ s.gender or "—" }}</td>
+      <td>{{ s.parent_phone or "—" }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="card">No students match. Try a different class or search.</div>
+{% endif %}
+{% endblock %}

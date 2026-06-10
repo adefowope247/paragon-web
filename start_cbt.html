@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% set active='startcbt' %}
+{% block title %}Start CBT Exam &middot; ParagonEdu{% endblock %}
+{% block content %}
+<h1 class="page-title">Start CBT Exam</h1>
+<p class="page-sub">Load a test to preview its questions, or sit it yourself to check it before students do</p>
+{% if tests %}
+<table>
+  <thead><tr><th>Title</th><th>Type</th><th>Subjects</th><th>Questions</th><th>Duration</th><th></th></tr></thead>
+  <tbody>
+  {% for t in tests %}
+    <tr>
+      <td><strong>{{ t.title }}</strong></td>
+      <td>{{ presets.get(t.exam_type, {}).get('label', t.exam_type) }}</td>
+      <td>{{ t.subject_list|join(", ") }}</td>
+      <td>{{ (t.subject_list|length) * t.n_per_subject }}</td>
+      <td>{{ t.duration_min }} min</td>
+      <td style="white-space:nowrap">
+        <a class="btn btn-ghost" href="/start-cbt/{{ t.id }}/preview" style="padding:6px 12px">Preview</a>
+        <a class="btn btn-primary" href="/start-cbt/{{ t.id }}/take" style="padding:6px 12px">Take</a>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="card">No CBT tests yet. <a href="/cbt/new">Create one</a> first, or add questions in the <a href="/cbt/bank">Question Bank</a>.</div>
+{% endif %}
+{% endblock %}

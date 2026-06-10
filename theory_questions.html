@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% set active='theory' %}
+{% block title %}Questions &middot; {{ exam.title }}{% endblock %}
+{% block content %}
+<a class="back" href="/theory">&larr; Back to exams</a>
+<h1 class="page-title">{{ exam.title }}</h1>
+<p class="page-sub">{{ exam.subject or "" }}{% if exam.class_level %} &middot; {{ exam.class_level }}{% endif %} &middot; {{ exam.duration_min }} min &middot; {{ exam.mode }} mode</p>
+
+{% if added %}<div class="ok-banner">Question added.</div>{% endif %}
+
+{% if questions %}
+<div class="card" style="margin-bottom:16px">
+  <h3 style="margin:0 0 10px;font-size:16px">Questions ({{ questions|length }})</h3>
+  {% for q in questions %}
+    <div class="qitem">
+      <div class="qnum">{{ loop.index }}</div>
+      <div class="qbody">
+        <div>{{ q.question }}</div>
+        {% if q.model_answer %}<div class="model">Model answer: {{ q.model_answer }}</div>{% endif %}
+      </div>
+      <div class="qmarks">{{ q.marks }} mk</div>
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="card" style="max-width:720px">
+  <h3 style="margin:0 0 12px;font-size:16px">Add a question</h3>
+  <form method="post" action="/theory/{{ exam.id }}/questions">
+    <label style="display:block;font-size:13px;font-weight:600;margin-bottom:5px">Question *</label>
+    <textarea name="question" rows="3" class="cmt" required placeholder="Type the question. For English you can include a passage, lexis & structures with a title."></textarea>
+    <div class="form-grid" style="margin-top:12px">
+      <div><label>Marks</label><input type="number" name="marks" value="5" min="0" step="0.5"></div>
+    </div>
+    <label style="display:block;font-size:13px;font-weight:600;margin:12px 0 5px">Model answer (optional, helps marking)</label>
+    <textarea name="model_answer" rows="2" class="cmt" placeholder="Expected key points"></textarea>
+    <button class="btn btn-primary" type="submit" style="margin-top:12px">Add question</button>
+  </form>
+</div>
+{% if exam.mode != 'hybrid' %}
+<p class="page-sub" style="margin-top:14px">Students of {{ exam.class_level or "the class" }} will see this exam under "Theory Exams" when they log in.</p>
+{% else %}
+<p class="page-sub" style="margin-top:14px">Hybrid mode: students read questions on screen with a countdown and write on paper.</p>
+{% endif %}
+{% endblock %}

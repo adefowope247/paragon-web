@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% set active='cbt' %}
+{% block title %}CBT &middot; ParagonEdu{% endblock %}
+{% block content %}
+<div class="result-head">
+  <div><h1 class="page-title">CBT (Objective Tests)</h1><p class="page-sub">JAMB, WAEC, NECO & School multiple-choice tests</p></div>
+  <div style="display:flex;gap:8px"><a class="btn btn-ghost" href="/cbt/bank">Question Bank</a><a class="btn btn-gold" href="/cbt/new">+ New CBT test</a></div>
+</div>
+<div class="card" style="margin-bottom:16px">
+  <strong>Create by exam type:</strong>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+  {% for key, p in presets.items() %}
+    <a class="btn btn-ghost" href="/cbt/new?exam_type={{ key }}">{{ p.label }}</a>
+  {% endfor %}
+  </div>
+</div>
+{% if tests %}
+<table>
+  <thead><tr><th>Title</th><th>Type</th><th>Subjects</th><th>Per subj</th><th>Duration</th><th>Linked</th><th></th></tr></thead>
+  <tbody>
+  {% for t in tests %}
+    <tr>
+      <td><strong>{{ t.title }}</strong></td>
+      <td>{{ presets.get(t.exam_type, {}).get('label', t.exam_type) }}</td>
+      <td>{{ t.subject_list|join(", ") }}</td>
+      <td>{{ t.n_per_subject }}</td>
+      <td>{{ t.duration_min }} min</td>
+      <td>{% if t.link_target and t.link_target != 'none' %}<span class="badge">{{ t.link_target|upper }} &rarr; {{ t.link_subject }}</span>{% else %}—{% endif %}</td>
+      <td><a href="/cbt/{{ t.id }}/scores">Scores</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}<div class="card">No CBT tests yet.</div>{% endif %}
+{% endblock %}

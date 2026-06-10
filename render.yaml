@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: paragon-edu-demo
+    runtime: python
+    plan: starter            # Starter ($7/mo) supports a persistent disk
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python build_demo.py || true; uvicorn app:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PARAGON_DB
+        value: /var/data/school_data.db
+      - key: PARAGON_SECRET
+        generateValue: true
+    disk:
+      name: paragon-data
+      mountPath: /var/data
+      sizeGB: 1

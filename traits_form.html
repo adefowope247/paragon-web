@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% set active='results' %}
+{% block title %}Traits & Comments &middot; {{ student.full_name }}{% endblock %}
+{% block content %}
+<a class="back" href="/results/{{ student.id }}">&larr; Back to result</a>
+<h1 class="page-title">Traits & Comments</h1>
+<p class="page-sub">{{ student.full_name }}{% if student.class_level %} &middot; {{ student.class_level }}{% endif %}
+  &middot; {{ school.session or "" }}{% if school.term %} &middot; {{ school.term }} term{% endif %}</p>
+
+{% if saved %}<div class="ok-banner">Traits and comments saved.</div>{% endif %}
+
+<form method="post" action="/traits/{{ student.id }}">
+<div class="card" style="margin-bottom:16px">
+  <h3 style="margin:0 0 4px;font-size:16px">Affective Domain</h3>
+  <p style="color:var(--muted);font-size:13px;margin:0 0 12px">Behaviour & attitude &middot; 5 = Excellent, 1 = Poor</p>
+  <table class="trait-tbl">
+    <thead><tr><th>Trait</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th></tr></thead>
+    <tbody>
+    {% for t in affective %}
+      <tr><td>{{ t }}</td>
+      {% for v in [5,4,3,2,1] %}
+        <td><input type="radio" name="r_{{ t }}" value="{{ v }}" {{ 'checked' if ratings.get(t)==v }}></td>
+      {% endfor %}
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="card" style="margin-bottom:16px">
+  <h3 style="margin:0 0 4px;font-size:16px">Psychomotor Domain</h3>
+  <p style="color:var(--muted);font-size:13px;margin:0 0 12px">Skills &middot; 5 = Excellent, 1 = Poor</p>
+  <table class="trait-tbl">
+    <thead><tr><th>Skill</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th></tr></thead>
+    <tbody>
+    {% for t in psychomotor %}
+      <tr><td>{{ t }}</td>
+      {% for v in [5,4,3,2,1] %}
+        <td><input type="radio" name="r_{{ t }}" value="{{ v }}" {{ 'checked' if ratings.get(t)==v }}></td>
+      {% endfor %}
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="card" style="margin-bottom:16px">
+  <h3 style="margin:0 0 4px;font-size:16px">Comments</h3>
+  <p style="color:var(--muted);font-size:13px;margin:0 0 12px">Auto-filled from the pupil's average. Edit freely, then Save.</p>
+  <label style="display:block;font-size:13px;font-weight:600;margin-bottom:5px">Class Teacher's comment</label>
+  <textarea name="teacher_comment" rows="2" class="cmt">{{ comments.teacher_comment }}</textarea>
+  <label style="display:block;font-size:13px;font-weight:600;margin:12px 0 5px">Head Teacher's comment</label>
+  <textarea name="head_comment" rows="2" class="cmt">{{ comments.head_comment }}</textarea>
+</div>
+
+<button class="btn btn-primary" type="submit">Save</button>
+<a class="btn btn-ghost" href="/results/{{ student.id }}/report.pdf" target="_blank">View report card</a>
+</form>
+{% endblock %}

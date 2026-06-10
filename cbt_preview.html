@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% set active='startcbt' %}
+{% block title %}Preview &middot; {{ test.title }}{% endblock %}
+{% block content %}
+<a class="back" href="/start-cbt">&larr; Back</a>
+<div class="result-head">
+  <div><h1 class="page-title">{{ test.title }}</h1>
+  <p class="page-sub">Preview &middot; {{ test.subject_list|join(", ") }} &middot; {{ questions|length }} questions &middot; correct answers shown in green</p></div>
+  <a class="btn btn-primary" href="/start-cbt/{{ test.id }}/take">Take this test</a>
+</div>
+{% if questions %}
+{% for q in questions %}
+  <div class="card" style="margin-bottom:12px">
+    <div class="exam-qhead"><span class="qn">Q{{ loop.index }}</span>{% if q.subject %} <span class="qmk">{{ q.subject }}</span>{% endif %}</div>
+    <div class="exam-qtext" style="margin:6px 0">{{ q.question }}</div>
+    <div class="opts">
+      {% for opt in ['A','B','C','D'] %}
+        {% set val = q['option_' ~ opt|lower] %}
+        {% if val %}
+          <div class="opt {{ 'opt-correct' if q.answer == opt }}">
+            <span class="ol">{{ opt }}</span> {{ val }}
+            {% if q.answer == opt %}<span class="tick">✓ correct</span>{% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    {% if q.topic %}<div class="model" style="margin-top:8px">Topic: {{ q.topic }}</div>{% endif %}
+  </div>
+{% endfor %}
+{% else %}
+<div class="card">No questions found for this test's subjects. Add questions in the Question Bank.</div>
+{% endif %}
+{% endblock %}

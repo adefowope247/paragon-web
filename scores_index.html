@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% set active='scores' %}
+{% block title %}Score Entry &middot; ParagonEdu{% endblock %}
+{% block content %}
+<h1 class="page-title">Score Entry</h1>
+<p class="page-sub">Pick a student to enter or update scores</p>
+<form class="toolbar" method="get" action="/scores">
+  <input type="text" name="q" placeholder="Search name or admission no" value="{{ search }}">
+  <select name="class_level" onchange="this.form.submit()">
+    {% for c in classes %}<option value="{{ c }}" {{ 'selected' if c==selected_class }}>{{ c }}</option>{% endfor %}
+  </select>
+  <button class="btn btn-primary" type="submit">Search</button>
+</form>
+{% if students %}
+<table>
+  <thead><tr><th>Name</th><th>Admission No</th><th>Class</th><th></th></tr></thead>
+  <tbody>
+  {% for s in students %}
+    <tr onclick="location.href='/scores/{{ s.id }}'" style="cursor:pointer">
+      <td>{{ s.full_name }}</td><td>{{ s.admission_no or "—" }}</td>
+      <td><span class="badge">{{ s.class_level or "—" }}</span></td>
+      <td><a href="/scores/{{ s.id }}">Enter scores &rarr;</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}<div class="card">No students match.</div>{% endif %}
+{% endblock %}

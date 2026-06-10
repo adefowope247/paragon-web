@@ -1,0 +1,410 @@
+/* ParagonEdu Web - deep academic blue + gold. Built for cheap Android screens
+   and weak connections: system fonts, light CSS, no frameworks. */
+:root{
+  --navy:#0E2A47;        /* deep academic blue */
+  --navy-2:#15395f;
+  --gold:#C9A227;        /* restrained gold accent */
+  --gold-soft:#E8D9A0;
+  --ink:#1c2733;
+  --muted:#5f7186;
+  --line:#e3e8ef;
+  --bg:#f5f7fa;
+  --card:#ffffff;
+  --ok:#1e7d52;
+  --danger:#b4232a;
+  --radius:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:var(--bg); color:var(--ink); line-height:1.5; font-size:15px;
+}
+a{color:var(--navy-2); text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ---- top bar ---- */
+.topbar{
+  background:var(--navy); color:#fff; padding:0 18px; height:58px;
+  display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:20;
+}
+.brand{display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:.2px}
+.brand .mark{
+  width:30px;height:30px;border-radius:7px;background:var(--gold);
+  display:flex;align-items:center;justify-content:center;color:var(--navy);font-weight:800
+}
+.brand small{display:block;font-weight:400;font-size:11px;color:var(--gold-soft);letter-spacing:.3px}
+.topbar .who{font-size:13px;color:#cdd9e6;display:flex;align-items:center;gap:14px}
+.topbar .who a{color:#fff}
+
+/* ---- layout ---- */
+.shell{display:flex; min-height:calc(100vh - 58px)}
+.side{
+  width:210px; background:#fff; border-right:1px solid var(--line); padding:14px 10px;
+  flex-shrink:0;
+}
+.side a{
+  display:flex;align-items:center;gap:10px; padding:10px 12px; border-radius:8px;
+  color:var(--ink); font-weight:500; margin-bottom:2px;
+}
+.side a:hover{background:#eef2f7; text-decoration:none}
+.side a.active{background:var(--navy); color:#fff}
+.side .sec{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin:14px 12px 6px}
+.main{flex:1; padding:22px 26px; max-width:1100px}
+
+/* ---- headings ---- */
+.page-title{font-size:22px;font-weight:700;margin:0 0 2px}
+.page-sub{color:var(--muted);font-size:13px;margin:0 0 18px}
+
+/* ---- cards / stats ---- */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:8px}
+.stat{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 18px; position:relative; overflow:hidden;
+}
+.stat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gold)}
+.stat .n{font-size:30px;font-weight:800;color:var(--navy);line-height:1}
+.stat .l{color:var(--muted);font-size:13px;margin-top:6px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+
+/* ---- table ---- */
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.toolbar input,.toolbar select{
+  padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-size:14px;background:#fff
+}
+.toolbar input[type=text]{min-width:200px}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+th{background:#f0f3f8;text-align:left;padding:11px 14px;font-size:12px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted)}
+td{padding:11px 14px;border-top:1px solid var(--line);font-size:14px}
+tr:hover td{background:#fafbfd}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:12px;background:var(--gold-soft);color:#6b5410;font-weight:600}
+
+/* ---- buttons ---- */
+.btn{display:inline-block;padding:9px 16px;border-radius:8px;border:0;font-size:14px;font-weight:600;cursor:pointer}
+.btn-primary{background:var(--navy);color:#fff}
+.btn-primary:hover{background:var(--navy-2);text-decoration:none}
+.btn-gold{background:var(--gold);color:var(--navy)}
+.btn-ghost{background:#eef2f7;color:var(--ink)}
+
+/* ---- login ---- */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--navy),#091d33);padding:20px}
+.login-card{background:#fff;border-radius:16px;width:100%;max-width:380px;padding:32px 28px;
+  box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.login-card .mark{width:52px;height:52px;border-radius:12px;background:var(--gold);
+  display:flex;align-items:center;justify-content:center;color:var(--navy);font-weight:800;font-size:22px;margin:0 auto 14px}
+.login-card h1{text-align:center;font-size:20px;margin:0 0 2px;color:var(--navy)}
+.login-card .tag{text-align:center;color:var(--muted);font-size:13px;margin-bottom:22px}
+.login-card label{display:block;font-size:13px;font-weight:600;margin:12px 0 5px;color:var(--ink)}
+.login-card input,.login-card select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:8px;font-size:15px}
+.login-card .btn{width:100%;margin-top:18px;padding:12px}
+.err{background:#fdecec;color:var(--danger);padding:10px 12px;border-radius:8px;font-size:13px;margin-bottom:6px;border:1px solid #f3c9c9}
+.foot{text-align:center;color:var(--muted);font-size:11px;margin-top:18px}
+
+/* ---- detail ---- */
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.detail-grid .row{background:#fff;padding:13px 16px}
+.detail-grid .k{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.detail-grid .v{font-size:15px;font-weight:600;margin-top:3px}
+.back{font-size:13px;color:var(--muted);margin-bottom:10px;display:inline-block}
+
+/* ---- responsive ---- */
+@media(max-width:760px){
+  .shell{flex-direction:column}
+  .side{width:auto;display:flex;flex-wrap:wrap;gap:4px;border-right:0;border-bottom:1px solid var(--line)}
+  .side .sec{display:none}
+  .side a{margin:0;padding:8px 12px;font-size:13px}
+  .main{padding:16px}
+  .topbar .who span{display:none}
+}
+
+/* ---- Phase 2: results + scores ---- */
+.result-head{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px}
+.g{display:inline-block;min-width:26px;text-align:center;padding:2px 8px;border-radius:6px;font-weight:700;font-size:13px;color:#fff}
+.g-A{background:#1e7d52}.g-B{background:#2e8b57}.g-C{background:#3b7dd8}
+.g-D{background:#c9920f}.g-E{background:#d2691e}.g-F{background:#b4232a}
+.g-{background:#cfd8e3;color:#5f7186}
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-top:18px}
+.sbox{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;border-left:4px solid var(--gold)}
+.sbox .l{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+.sbox .n{font-size:24px;font-weight:800;color:var(--navy);margin-top:4px}
+input.score{width:74px;padding:7px 8px;border:1px solid var(--line);border-radius:7px;font-size:14px;text-align:center}
+input.score:focus{outline:2px solid var(--navy);border-color:var(--navy)}
+.ok-banner{background:#e7f6ee;color:var(--ok);border:1px solid #b9e3cd;padding:11px 14px;border-radius:8px;margin-bottom:14px;font-weight:600}
+.err-banner{background:#fdecec;color:var(--danger);border:1px solid #f3c9c9;padding:13px 16px;border-radius:8px;margin-bottom:16px}
+.err-banner ul{margin:8px 0 0;padding-left:20px}
+.err-banner li{margin:3px 0;font-size:14px}
+input.score:invalid{border-color:var(--danger);background:#fdf3f3}
+
+/* ---- Phase 3: fees ---- */
+.owing{color:var(--danger);font-weight:700}
+.credit{color:#2e8b57;font-weight:700}
+.clear{color:#2e8b57;font-weight:600}
+.pay-row{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+.pay-row label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px}
+.pay-row input,.pay-row select{padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-size:14px}
+.pay-row input[type=number]{width:140px}
+@media(max-width:760px){.pay-row>div{flex:1 1 100%}.pay-row input[type=number]{width:100%}}
+
+/* ---- Phase 4: forms ---- */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-grid .full{grid-column:1 / -1}
+.form-grid label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px}
+.form-grid input,.form-grid select{width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:8px;font-size:14px}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr}}
+.btn-wa{background:#25D366;color:#063;font-weight:700}
+.btn-wa:hover{background:#1ebe5b;text-decoration:none}
+
+/* ---- Phase 4d: traits ---- */
+.trait-tbl{width:100%;border-collapse:collapse}
+.trait-tbl th{background:#f0f3f8;padding:8px;font-size:12px;text-align:center}
+.trait-tbl th:first-child{text-align:left;padding-left:12px}
+.trait-tbl td{padding:8px;border-top:1px solid var(--line);text-align:center}
+.trait-tbl td:first-child{text-align:left;padding-left:12px;font-weight:500}
+.trait-tbl input[type=radio]{width:18px;height:18px;cursor:pointer}
+textarea.cmt{width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:8px;font-size:14px;font-family:inherit;resize:vertical}
+
+/* ---- Phase 5: theory exams ---- */
+.qitem{display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.qitem:first-child{border-top:0}
+.qnum{width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.qbody{flex:1}
+.model{font-size:13px;color:var(--muted);margin-top:4px;font-style:italic}
+.qmarks{color:var(--gold);font-weight:700;font-size:13px}
+
+/* exam-taking full screen */
+.exam-body{background:#eef2f7;margin:0}
+.exam-bar{position:sticky;top:0;background:var(--navy);color:#fff;display:flex;justify-content:space-between;align-items:center;padding:12px 20px;z-index:30}
+.exam-title{font-weight:700}
+.timer{font-size:22px;font-weight:800;font-family:monospace;background:rgba(255,255,255,.12);padding:4px 14px;border-radius:8px}
+.timer.low{background:var(--danger);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.6}}
+.exam-wrap{max-width:820px;margin:18px auto;padding:0 16px}
+.exam-instr{background:#fff;border:1px solid var(--line);border-left:4px solid var(--gold);padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:14px}
+.exam-q{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:14px}
+.exam-qhead{display:flex;gap:10px;align-items:center}
+.qn{background:var(--navy);color:#fff;padding:2px 10px;border-radius:6px;font-weight:700;font-size:13px}
+.qmk{color:var(--muted);font-size:13px}
+.exam-qtext{margin:10px 0;white-space:pre-wrap;line-height:1.6}
+.exam-ans{width:100%;padding:11px;border:1px solid var(--line);border-radius:8px;font-size:15px;font-family:inherit;resize:vertical}
+.exam-ans:focus{outline:2px solid var(--navy);border-color:var(--navy)}
+.exam-actions{text-align:center;margin:20px 0 40px}
+.ans-box{background:#f5f7fa;border:1px solid var(--line);border-radius:8px;padding:12px 14px;white-space:pre-wrap;line-height:1.6;font-size:14px;margin-top:8px}
+.awarded{margin-left:auto;background:var(--ok);color:#fff;padding:2px 10px;border-radius:6px;font-weight:700;font-size:13px}
+
+/* ---- Phase 6: MCQ options ---- */
+.opts{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.opt{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;cursor:pointer}
+.opt:hover{background:#f5f7fa}
+.opt input{width:18px;height:18px}
+.ol{font-weight:700;color:var(--navy);min-width:18px}
+
+/* ---- Start CBT preview ---- */
+.opt-correct{background:#e7f6ee;border-color:#9bd9b6}
+.tick{margin-left:auto;color:var(--ok);font-weight:700;font-size:13px}
+
+/* ---- Phase 7: generator ---- */
+.genq{display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.genq:first-of-type{border-top:0}
+.keepbox{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);white-space:nowrap}
+.genbody{flex:1}
+.genopts{font-size:13px;color:#444;margin-top:4px}
+.genans{font-size:12px;color:var(--ok);font-weight:600;margin-top:4px}
+
+/* ================= VISUAL REFRESH ================= */
+/* logo image inside the topbar mark */
+.brand .mark{overflow:hidden;padding:0;background:#fff}
+.brand .mark img{width:100%;height:100%;object-fit:contain;display:block}
+
+/* Beautiful sidebar: deep navy -> teal gradient, light bold text */
+.side{
+  background:linear-gradient(180deg,#0E2A47 0%,#123a5e 55%,#0c3b52 100%);
+  border-right:0;
+  box-shadow:2px 0 14px rgba(14,42,71,.18);
+}
+.side a{
+  color:#e9eff6;
+  font-size:15.5px;
+  font-weight:700;
+  letter-spacing:.2px;
+  padding:11px 14px;
+  border-radius:9px;
+}
+.side a:hover{
+  background:rgba(255,255,255,.10);
+  color:#fff;
+  text-decoration:none;
+}
+.side a.active{
+  background:var(--gold);
+  color:#0E2A47;
+  font-weight:800;
+  box-shadow:0 4px 12px rgba(201,162,39,.35);
+}
+.side .sec{
+  color:var(--gold-soft);
+  font-size:11.5px;
+  font-weight:800;
+  letter-spacing:1px;
+  margin:16px 14px 6px;
+  opacity:.9;
+}
+/* dim "coming soon"/disabled links stay readable on dark */
+.side a[onclick]{color:#9fb3c8 !important}
+
+@media(max-width:760px){
+  .side{background:linear-gradient(90deg,#0E2A47,#123a5e)}
+  .side a{font-size:14px}
+}
+
+/* ================= HEADER: larger, professional 3D ================= */
+.topbar{height:74px; padding:0 24px;
+  background:linear-gradient(180deg,#10355a 0%, #0E2A47 100%);
+  box-shadow:0 2px 10px rgba(14,42,71,.35);
+}
+.brand{gap:14px}
+.brand > span:last-child{
+  font-size:25px;
+  font-weight:800;
+  letter-spacing:.3px;
+  line-height:1.05;
+  /* subtle 3D / embossed depth */
+  text-shadow:0 1px 0 rgba(0,0,0,.30), 0 2px 4px rgba(0,0,0,.28), 0 1px 1px rgba(255,255,255,.10);
+}
+.brand small{
+  font-size:12.5px;
+  font-weight:600;
+  letter-spacing:.4px;
+  margin-top:2px;
+  text-shadow:0 1px 1px rgba(0,0,0,.25);
+}
+.brand .mark{width:46px;height:46px;border-radius:10px;
+  box-shadow:0 3px 8px rgba(0,0,0,.30), inset 0 0 0 1px rgba(255,255,255,.18)}
+.topbar .who{font-size:14px}
+
+@media(max-width:760px){
+  .topbar{height:auto;padding:10px 16px}
+  .brand > span:last-child{font-size:19px}
+  .brand small{font-size:11px}
+  .brand .mark{width:40px;height:40px}
+}
+
+/* ================= HEADER: BOLD DRAMATIC 3D + school details ================= */
+.topbar{height:auto; min-height:84px; padding:12px 24px; align-items:center;
+  background:linear-gradient(180deg,#13406b 0%, #0E2A47 70%, #0a2238 100%);
+  box-shadow:0 4px 18px rgba(8,24,42,.45);
+  border-bottom:3px solid var(--gold);
+}
+.brand{gap:16px; align-items:center}
+.brand-text{display:flex; flex-direction:column; line-height:1.1}
+.school-name{
+  font-size:30px;
+  font-weight:900;
+  letter-spacing:.4px;
+  color:#ffffff;
+  /* dramatic stacked 3D extrusion */
+  text-shadow:
+    0 1px 0 #c9a227,
+    0 2px 0 #b8941f,
+    0 3px 0 #a78518,
+    0 4px 0 #967611,
+    0 5px 0 #856709,
+    0 6px 8px rgba(0,0,0,.55),
+    0 8px 16px rgba(0,0,0,.45);
+}
+.school-motto{font-size:13px;font-style:italic;color:var(--gold-soft);font-weight:600;margin-top:5px;
+  text-shadow:0 1px 2px rgba(0,0,0,.4)}
+.school-contact{font-size:12.5px;color:#dbe6f2;font-weight:500;margin-top:4px;
+  text-shadow:0 1px 1px rgba(0,0,0,.35)}
+.brand small{font-size:11.5px;font-weight:600;color:var(--gold-soft);margin-top:4px;
+  letter-spacing:.3px;text-shadow:0 1px 1px rgba(0,0,0,.3)}
+.brand .mark{width:56px;height:56px;border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,.4), inset 0 0 0 1px rgba(255,255,255,.22);
+  flex-shrink:0}
+.topbar .who{font-size:14px; align-self:flex-start; margin-top:4px}
+
+@media(max-width:760px){
+  .school-name{font-size:21px;
+    text-shadow:0 1px 0 #c9a227,0 2px 0 #a78518,0 3px 0 #856709,0 4px 6px rgba(0,0,0,.5)}
+  .school-contact,.school-motto{font-size:11px}
+  .brand .mark{width:44px;height:44px}
+  .topbar .who{font-size:12px}
+}
+
+/* ================= Center header text (logo stays put) ================= */
+.brand-text{align-items:center; text-align:center}
+.school-name, .school-motto, .school-contact, .brand small{text-align:center}
+
+/* ============ Center header text across the WHOLE bar ============ */
+.topbar{position:relative; justify-content:center}
+/* logo pinned to the far left, vertically centered, out of the centering flow */
+.brand{position:static; flex-direction:column; align-items:center; gap:6px; width:100%}
+.brand .mark{position:absolute; left:24px; top:50%; transform:translateY(-50%); margin:0}
+/* the text block now centers in the full bar width */
+.brand-text{align-items:center; text-align:center; width:100%}
+/* user / sign-out pinned far right, not affecting centering */
+.topbar .who{position:absolute; right:24px; top:14px; margin-top:0; align-self:auto}
+
+@media(max-width:760px){
+  .brand .mark{left:12px; width:40px; height:40px}
+  .topbar .who{right:10px; top:8px}
+}
+
+/* ============ Bigger logo ============ */
+.brand .mark{width:74px; height:74px; border-radius:14px}
+@media(max-width:760px){ .brand .mark{width:54px; height:54px} }
+
+/* ============ Page footer ============ */
+.app-footer{
+  text-align:center;
+  padding:16px 20px;
+  margin-top:30px;
+  border-top:2px solid var(--gold);
+  background:linear-gradient(180deg,#0E2A47,#0a2238);
+  color:var(--gold-soft);
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:.3px;
+}
+.app-footer .sep{color:#5f7186; margin:0 6px}
+.app-footer a{color:var(--gold-soft); text-decoration:none}
+
+/* ============ Larger logo ============ */
+.brand .mark{width:74px; height:74px; border-radius:14px}
+@media(max-width:760px){ .brand .mark{width:54px; height:54px} }
+
+/* ============ Page footer ============ */
+.page-footer{
+  text-align:center;
+  padding:16px 16px;
+  margin:28px -26px -22px;   /* bleed to the edges of the main area */
+  border-top:3px solid var(--gold);
+  color:#ffffff;
+  font-size:13.5px;
+  font-weight:700;
+  letter-spacing:.3px;
+  background:linear-gradient(180deg,#10355a,#0E2A47);
+  box-shadow:0 -2px 10px rgba(8,24,42,.25);
+}
+.page-footer .sep{color:var(--gold);margin:0 10px;font-weight:800}
+
+/* ============ Logo: larger still ============ */
+.brand .mark{width:92px; height:92px; border-radius:16px}
+.topbar{min-height:104px}
+@media(max-width:760px){ .brand .mark{width:60px; height:60px} .topbar{min-height:auto} }
+
+/* ============ Logo bigger (v2) + prominent footer ============ */
+.brand .mark{width:90px; height:90px; border-radius:16px}
+@media(max-width:760px){ .brand .mark{width:60px; height:60px} }
+.topbar{min-height:104px}
+
+.page-footer{
+  background:linear-gradient(180deg,#10355a,#0E2A47);
+  color:#e9eff6;
+  border-top:3px solid var(--gold);
+  font-size:14px;
+  padding:20px 16px;
+}
+.page-footer .sep{color:var(--gold)}

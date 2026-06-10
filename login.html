@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign in &middot; {{ school.name or "ParagonEdu" }}</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="login-wrap">
+  <form class="login-card" method="post" action="/login">
+    <div class="mark">P</div>
+    <h1>{{ school.name or "ParagonEdu" }}</h1>
+    <div class="tag">School management portal</div>
+    {% if error %}<div class="err">{{ error }}</div>{% endif %}
+    <label for="role">I am a</label>
+    <select name="role" id="role">
+      <option value="admin">Administrator</option>
+      <option value="teacher">Teacher / Staff</option>
+      <option value="student">Student</option>
+    </select>
+    <label for="username">Username</label>
+    <input id="username" name="username" autocomplete="username" autofocus required>
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" autocomplete="current-password" required>
+    <button class="btn btn-primary" type="submit">Sign in</button>
+    <div class="foot">{{ school.session or "" }} {% if school.term %}&middot; {{ school.term }} term{% endif %}</div>
+  </form>
+</div>
+</body>
+</html>

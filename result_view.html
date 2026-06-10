@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% set active='results' %}
+{% block title %}{{ r.student.full_name }} result &middot; ParagonEdu{% endblock %}
+{% block content %}
+{% if user.role != 'student' %}<a class="back" href="/results">&larr; Back to results</a>{% endif %}
+<div class="result-head">
+  <div>
+    <h1 class="page-title">{{ r.student.full_name }}</h1>
+    <p class="page-sub">{{ r.student.admission_no or "" }}{% if r.student.class_level %} &middot; {{ r.student.class_level }}{% endif %}
+      {% if r.info.session %} &middot; {{ r.info.session }}{% endif %}{% if r.info.term %} &middot; {{ r.info.term }} term{% endif %}</p>
+  </div>
+  {% if r.subjects_counted > 0 %}
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    {% if user.role != 'student' %}<a class="btn btn-ghost" href="/traits/{{ r.student.id }}">Traits & Comments</a>{% endif %}
+    <a class="btn btn-gold" href="/results/{{ r.student.id }}/report.pdf" target="_blank">Download report card</a>
+    {% if user.role != 'student' and wa_link %}<a class="btn btn-wa" href="{{ wa_link }}" target="_blank">Send to parent (WhatsApp)</a>{% endif %}
+  </div>
+  {% endif %}
+</div>
+
+{% if r.subjects_counted == 0 %}
+  <div class="card">No scores recorded yet for this student.</div>
+{% else %}
+<table>
+  <thead><tr>
+    <th>Subject</th>
+    <th>CA1 ({{ r.maxima.ca1 }})</th>
+    <th>CA2 ({{ r.maxima.ca2 }})</th>
+    <th>Exam ({{ r.maxima.exam }})</th>
+    <th>Total ({{ r.maxima.total }})</th>
+    <th>Grade</th>
+    <th>Remark</th>
+  </tr></thead>
+  <tbody>
+  {% for row in r.rows %}
+    <tr>
+      <td><strong>{{ row.subject }}</strong></td>
+      <td>{{ row.ca1 }}</td><td>{{ row.ca2 }}</td><td>{{ row.exam }}</td>
+      <td><strong>{{ row.total }}</strong></td>
+      <td>{% if row.grade %}<span class="g g-{{ row.grade }}">{{ row.grade }}</span>{% endif %}</td>
+      <td>{{ row.remark }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<div class="summary">
+  <div class="sbox"><div class="l">Subjects</div><div class="n">{{ r.subjects_counted }}</div></div>
+  <div class="sbox"><div class="l">Total</div><div class="n">{{ r.grand_total }}</div></div>
+  <div class="sbox"><div class="l">Average</div><div class="n">{{ r.average }}</div></div>
+  <div class="sbox"><div class="l">Overall grade</div><div class="n"><span class="g g-{{ r.overall_grade }}">{{ r.overall_grade }}</span></div></div>
+</div>
+<p class="page-sub" style="margin-top:14px">{{ r.overall_remark }}</p>
+{% endif %}
+{% endblock %}

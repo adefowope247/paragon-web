@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% set active='theory' %}
+{% block title %}Theory Exams &middot; ParagonEdu{% endblock %}
+{% block content %}
+<div class="result-head">
+  <div><h1 class="page-title">Theory Exams</h1><p class="page-sub">Create and mark typed-answer exams</p></div>
+  <a class="btn btn-gold" href="/theory/new">+ New theory exam</a>
+</div>
+{% if exams %}
+<table>
+  <thead><tr><th>Title</th><th>Subject</th><th>Class</th><th>Questions</th><th>Marks</th><th>Duration</th><th></th></tr></thead>
+  <tbody>
+  {% for e in exams %}
+    <tr>
+      <td><strong>{{ e.title }}</strong></td>
+      <td>{{ e.subject or "—" }}</td>
+      <td><span class="badge">{{ e.class_level or "—" }}</span></td>
+      <td>{{ e.n_questions }}</td>
+      <td>{{ e.total_marks }}</td>
+      <td>{{ e.duration_min }} min</td>
+      <td><a href="/theory/{{ e.id }}/questions">Questions</a> &middot; <a href="/theory/{{ e.id }}/scripts">Scripts</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}<div class="card">No theory exams yet. Click "New theory exam" to create one.</div>{% endif %}
+{% endblock %}

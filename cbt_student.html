@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% set active='cbt' %}
+{% block title %}CBT &middot; ParagonEdu{% endblock %}
+{% block content %}
+<h1 class="page-title">CBT Tests</h1>
+<p class="page-sub">Objective tests for your class</p>
+{% if tests %}
+<table>
+  <thead><tr><th>Title</th><th>Subjects</th><th>Duration</th><th>Status</th><th></th></tr></thead>
+  <tbody>
+  {% for t in tests %}
+    <tr>
+      <td><strong>{{ t.title }}</strong></td>
+      <td>{{ t.subject_list|join(", ") }}</td>
+      <td>{{ t.duration_min }} min</td>
+      <td>{% if t.attempt_status=='done' %}<span class="clear">Done — {{ t.score }}/{{ t.total }}</span>{% elif t.attempt_status=='in_progress' %}<span class="owing">In progress</span>{% else %}<span class="badge">Not started</span>{% endif %}</td>
+      <td>{% if t.attempt_status=='done' %}<a href="/cbt/result/{{ t.attempt_id }}">View result</a>{% else %}<a class="btn btn-primary" href="/cbt/{{ t.id }}/take" style="padding:6px 14px">{{ 'Continue' if t.attempt_status=='in_progress' else 'Start' }}</a>{% endif %}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}<div class="card">No CBT tests available for your class yet.</div>{% endif %}
+{% endblock %}

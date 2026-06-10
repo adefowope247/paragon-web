@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% set active='cbt' %}
+{% block title %}Result &middot; {{ test.title }}{% endblock %}
+{% block content %}
+<a class="back" href="/cbt">&larr; Back</a>
+<h1 class="page-title">{{ test.title }}</h1>
+<p class="page-sub">{{ student.full_name }}</p>
+<div class="stat-grid">
+  <div class="stat"><div class="n">{{ attempt.score }}/{{ attempt.total }}</div><div class="l">Score</div></div>
+  <div class="stat"><div class="n">{{ pct }}%</div><div class="l">Percentage</div></div>
+  <div class="stat"><div class="n">
+    {% if pct >= 50 %}<span class="clear">Pass</span>{% else %}<span class="owing">Below 50%</span>{% endif %}
+  </div><div class="l">Outcome</div></div>
+</div>
+{% endblock %}

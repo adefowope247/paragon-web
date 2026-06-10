@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% set active='accounts' %}
+{% block title %}Accounts & Report &middot; ParagonEdu{% endblock %}
+{% block content %}
+<div class="result-head">
+  <div><h1 class="page-title">Accounts & Report</h1>
+  <p class="page-sub">{{ s.session or "" }}{% if s.term %} &middot; {{ s.term }} term{% endif %}</p></div>
+  <a class="btn btn-gold" href="/accounts/report.pdf" target="_blank">Download report PDF</a>
+</div>
+
+<div class="stat-grid" style="margin-bottom:18px">
+  <div class="stat"><div class="n">{{ naira(s.income) }}</div><div class="l">Fees collected (income)</div></div>
+  <div class="stat"><div class="n">{{ naira(s.expense) }}</div><div class="l">Total expenses</div></div>
+  <div class="stat"><div class="n">{% if s.balance >= 0 %}<span class="clear">{{ naira(s.balance) }}</span>{% else %}<span class="owing">{{ naira(s.balance) }}</span>{% endif %}</div><div class="l">Net balance</div></div>
+</div>
+
+<div class="stat-grid" style="margin-bottom:18px">
+  <div class="stat"><div class="n">{{ naira(s.expected) }}</div><div class="l">Expected fees this term</div></div>
+  <div class="stat"><div class="n"><span class="owing">{{ naira(s.outstanding) }}</span></div><div class="l">Still outstanding</div></div>
+</div>
+
+<div class="card">
+  <h3 style="margin:0 0 12px;font-size:16px">Expenses by category</h3>
+  {% if s.by_category %}
+  <table>
+    <thead><tr><th>Category</th><th>Amount</th></tr></thead>
+    <tbody>{% for c in s.by_category %}<tr><td>{{ c.category or "—" }}</td><td>{{ naira(c.total) }}</td></tr>{% endfor %}</tbody>
+  </table>
+  {% else %}<p style="color:var(--muted)">No expenses recorded yet.</p>{% endif %}
+</div>
+{% endblock %}

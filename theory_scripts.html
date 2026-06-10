@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% set active='theory' %}
+{% block title %}Scripts &middot; {{ exam.title }}{% endblock %}
+{% block content %}
+<a class="back" href="/theory">&larr; Back to exams</a>
+<h1 class="page-title">Scripts: {{ exam.title }}</h1>
+<p class="page-sub">{{ attempts|length }} submission(s)</p>
+{% if attempts %}
+<table>
+  <thead><tr><th>Student</th><th>Status</th><th>Score</th><th></th></tr></thead>
+  <tbody>
+  {% for a in attempts %}
+    <tr>
+      <td><strong>{{ a.full_name }}</strong><br><span style="color:var(--muted);font-size:12px">{{ a.admission_no or "" }}</span></td>
+      <td>
+        {% if a.status == 'in_progress' %}<span class="owing">In progress</span>
+        {% elif a.status == 'submitted' %}<span style="color:#3b7dd8">Awaiting marking</span>
+        {% else %}<span class="clear">Marked</span>{% endif %}
+      </td>
+      <td>{% if a.marked %}{{ a.total_score }}/{{ a.total_marks }}{% else %}—{% endif %}</td>
+      <td>
+        {% if a.status != 'in_progress' %}<a class="btn btn-primary" href="/theory/mark/{{ a.id }}" style="padding:6px 14px">{{ 'Re-mark' if a.marked else 'Mark' }}</a>{% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}<div class="card">No submissions yet.</div>{% endif %}
+{% endblock %}

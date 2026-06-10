@@ -1,0 +1,67 @@
+============================================================
+DEPLOY THE PARAGON WEB APP TO RENDER (live demo for clients)
+============================================================
+Your Render workspace is paid/active (paragongroup247@gmail.com).
+This puts the app online with a public link your clients can open on any phone
+or computer, pre-loaded with a rich demo (29 students, scores, fees, debtors,
+expenses, CBT, theory exam) so they can navigate EVERY feature.
+
+WHAT'S INCLUDED FOR DEPLOYMENT
+  - render.yaml      : tells Render how to run the app (Starter plan + 1GB disk)
+  - requirements.txt : the libraries to install
+  - build_demo.py    : builds the rich demo database ONCE (won't wipe on restart)
+  - Procfile, runtime.txt : extra hints some setups use
+
+------------------------------------------------------------
+EASIEST PATH: deploy from GitHub (recommended)
+------------------------------------------------------------
+1. Put this ParagonWeb folder in a GitHub repo:
+   - Create a new repo at github.com (e.g. "paragon-web").
+   - Upload ALL the files in this folder (app.py, webdb.py, pdfgen.py,
+     build_demo.py, render.yaml, requirements.txt, templates/, static/).
+   - Put your real logo at static/logo.png before uploading (optional).
+2. In Render (dashboard.render.com):
+   - New +  ->  Blueprint.
+   - Connect your GitHub and pick the repo.
+   - Render reads render.yaml automatically: Starter plan, 1GB disk, the
+     PARAGON_DB path, and a generated SECRET_KEY.
+   - Click Apply / Create. Wait for the build (a few minutes).
+3. When it goes live you get a URL like:
+       https://paragon-edu-demo.onrender.com
+   Open it and use the DEFAULT DEMO LOGINS below.
+
+   DEMO LOGINS (school: "ABC Group of Schools"):
+     Administrator :  username  admin     password  admin123     (role: Administrator)
+     Staff/Teacher :  username  teacher   password  teacher123   (role: Teacher / Staff)
+     Student       :  username  student   password  student123   (role: Student)
+   Pick the matching role in the dropdown when logging in.
+
+------------------------------------------------------------
+ALTERNATIVE: manual web service (no blueprint)
+------------------------------------------------------------
+If you'd rather not use render.yaml:
+  - New +  ->  Web Service  ->  connect the repo.
+  - Runtime: Python 3
+  - Build command:   pip install -r requirements.txt
+  - Start command:   python build_demo.py || true && uvicorn app:app --host 0.0.0.0 --port $PORT
+  - Plan: Starter ($7/mo).  Add a Disk: mount path /var/data , size 1 GB.
+  - Environment variable:  PARAGON_DB = /var/data/school_data.db
+  - Create Web Service.
+
+------------------------------------------------------------
+USE YOUR OWN DOMAIN (optional, looks professional)
+------------------------------------------------------------
+  In the service -> Settings -> Custom Domains -> add e.g.
+      demo.paragonsmartlearningtech.com
+  Then in your Whogohost DNS, add the CNAME record Render shows you.
+
+------------------------------------------------------------
+IMPORTANT NOTES
+------------------------------------------------------------
+  - The DEMO is PUBLIC. Do NOT load any real school's private student data
+    onto the demo site. For a real client (e.g. Foresight), deploy a SEPARATE
+    service with ITS OWN disk/database, and remove the demo seed.
+  - To refresh the demo data later: delete the school_data.db on the disk (or
+    redeploy with a cleared disk) and it rebuilds from build_demo.py.
+  - Free plan spins down after ~15 min idle (first visit then takes ~30s to wake).
+    Starter ($7/mo) with the disk stays warm and KEEPS the data.

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% set active='cbt' %}
+{% block title %}Question Bank &middot; CBT{% endblock %}
+{% block content %}
+<a class="back" href="/cbt">&larr; Back to CBT</a>
+<div class="result-head">
+  <div><h1 class="page-title">CBT Question Bank</h1></div>
+  <form method="post" action="/cbt/import" style="margin:0" onsubmit="return confirm('Import all CBT questions from your desktop database into the web bank? Duplicates are skipped.')">
+    <button class="btn btn-gold">Import from desktop app</button>
+  </form>
+</div>
+<form class="toolbar" method="get" action="/cbt/bank">
+  <select name="exam_type" onchange="this.form.submit()">
+    {% for key, p in presets.items() %}<option value="{{ key }}" {{ 'selected' if key==exam_type }}>{{ p.label }}</option>{% endfor %}
+  </select>
+</form>
+{% if added %}<div class="ok-banner">Question added.</div>{% endif %}
+{% if request.query_params.get('imported') %}<div class="ok-banner">{{ request.query_params.get('imported') }}</div>{% endif %}
+{% if subjects %}
+<div class="card" style="margin-bottom:16px">
+  <strong>{{ presets.get(exam_type, {}).get('label', exam_type) }} — questions by subject:</strong>
+  <ul style="margin:8px 0 0">{% for s in subjects %}<li>{{ s }}: {{ counts[s] }} question(s)</li>{% endfor %}</ul>
+</div>
+{% endif %}
+<div class="card" style="max-width:720px">
+  <h3 style="margin:0 0 12px;font-size:16px">Add a question</h3>
+  <form method="post" action="/cbt/bank">
+    <input type="hidden" name="exam_type" value="{{ exam_type }}">
+    <div class="form-grid">
+      <div><label>Subject *</label><input name="subject" required placeholder="e.g. Mathematics"></div>
+      <div><label>Topic (optional)</label><input name="topic"></div>
+    </div>
+    <label style="display:block;font-size:13px;font-weight:600;margin:12px 0 5px">Question *</label>
+    <textarea name="question" rows="2" class="cmt" required></textarea>
+    <div class="form-grid" style="margin-top:10px">
+      <div><label>Option A</label><input name="option_a" required></div>
+      <div><label>Option B</label><input name="option_b" required></div>
+      <div><label>Option C</label><input name="option_c"></div>
+      <div><label>Option D</label><input name="option_d"></div>
+      <div><label>Correct answer (A/B/C/D) *</label><input name="answer" maxlength="1" required placeholder="e.g. C"></div>
+      <div><label>Year (optional)</label><input name="year"></div>
+    </div>
+    <button class="btn btn-primary" type="submit" style="margin-top:12px">Add question</button>
+  </form>
+</div>
+{% endblock %}

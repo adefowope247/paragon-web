@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% set active='theory' %}
+{% block title %}My Exams &middot; ParagonEdu{% endblock %}
+{% block content %}
+<h1 class="page-title">My Exams</h1>
+<p class="page-sub">Theory exams for your class</p>
+{% if exams %}
+<table>
+  <thead><tr><th>Title</th><th>Subject</th><th>Duration</th><th>Status</th><th></th></tr></thead>
+  <tbody>
+  {% for e in exams %}
+    <tr>
+      <td><strong>{{ e.title }}</strong></td>
+      <td>{{ e.subject or "—" }}</td>
+      <td>{{ e.duration_min }} min</td>
+      <td>
+        {% if e.attempt_status == 'not_started' %}<span class="badge">Not started</span>
+        {% elif e.attempt_status == 'in_progress' %}<span class="owing">In progress</span>
+        {% elif e.attempt_status == 'submitted' %}<span style="color:#3b7dd8">Submitted (awaiting marking)</span>
+        {% else %}<span class="clear">Marked</span>{% endif %}
+      </td>
+      <td>
+        {% if e.attempt_status in ['not_started','in_progress'] %}
+          <a class="btn btn-primary" href="/theory/{{ e.id }}/take" style="padding:6px 14px">{{ 'Start' if e.attempt_status=='not_started' else 'Continue' }}</a>
+        {% else %}
+          <a href="/theory/review/{{ e.attempt_id }}">View script</a>
+        {% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}<div class="card">No exams available for your class yet.</div>{% endif %}
+{% endblock %}

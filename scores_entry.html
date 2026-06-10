@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% set active='scores' %}
+{% block title %}Enter scores &middot; {{ student.full_name }}{% endblock %}
+{% block content %}
+<a class="back" href="/scores">&larr; Back</a>
+<h1 class="page-title">{{ student.full_name }}</h1>
+<p class="page-sub">{{ student.admission_no or "" }}{% if student.class_level %} &middot; {{ student.class_level }}{% endif %}
+  &middot; Max: CA1 {{ info.max_ca1 or 20 }}, CA2 {{ info.max_ca2 or 20 }}, Exam {{ info.max_exam or 60 }}</p>
+
+{% if saved %}<div class="ok-banner">Scores saved.</div>{% endif %}
+
+{% if errors %}
+<div class="err-banner">
+  <strong>Nothing was saved.</strong> Please fix these and try again:
+  <ul>
+  {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+{% if items %}
+<form method="post" action="/scores/{{ student.id }}">
+<table>
+  <thead><tr><th>Subject</th><th>CA1</th><th>CA2</th><th>Exam</th></tr></thead>
+  <tbody>
+  {% for it in items %}
+    <tr>
+      <td><strong>{{ it.name }}</strong></td>
+      <td><input class="score" type="number" min="0" max="{{ info.max_ca1 or 20 }}" name="ca1_{{ it.id }}" value="{{ it.ca1 }}"></td>
+      <td><input class="score" type="number" min="0" max="{{ info.max_ca2 or 20 }}" name="ca2_{{ it.id }}" value="{{ it.ca2 }}"></td>
+      <td><input class="score" type="number" min="0" max="{{ info.max_exam or 60 }}" name="exam_{{ it.id }}" value="{{ it.exam }}"></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<div style="margin-top:16px;display:flex;gap:10px">
+  <button class="btn btn-primary" type="submit">Save scores</button>
+  <a class="btn btn-ghost" href="/results/{{ student.id }}">View result</a>
+</div>
+</form>
+{% else %}
+<div class="card">This student's class has no subjects to score. Configure class subjects first (desktop app), or assign subjects.</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% set active='theory' %}
+{% block title %}New Theory Exam{% endblock %}
+{% block content %}
+<a class="back" href="/theory">&larr; Back</a>
+<h1 class="page-title">New Theory Exam</h1>
+<div class="card" style="max-width:640px">
+<form method="post" action="/theory/new">
+  <div class="form-grid">
+    <div class="full"><label>Title *</label><input name="title" placeholder="e.g. Third Term English Theory" required></div>
+    <div><label>Subject</label><input list="subjlist" name="subject"><datalist id="subjlist">{% for s in subjects %}<option value="{{ s }}">{% endfor %}</datalist></div>
+    <div><label>Class</label><input list="classlist" name="class_level"><datalist id="classlist">{% for c in classes %}<option value="{{ c }}">{% endfor %}</datalist></div>
+    <div><label>Duration (minutes)</label><input type="number" name="duration_min" value="60" min="1"></div>
+    <div><label>Mode</label>
+      <select name="mode">
+        <option value="type">Type answers on screen</option>
+        <option value="hybrid">Hybrid (read on screen, write on paper)</option>
+      </select>
+    </div>
+    <div class="full"><label>Instructions (optional)</label><textarea name="instructions" rows="2" class="cmt" placeholder="Answer ALL questions. Write clearly."></textarea></div>
+  </div>
+  <button class="btn btn-primary" type="submit" style="margin-top:16px">Create & add questions</button>
+</form>
+</div>
+{% endblock %}

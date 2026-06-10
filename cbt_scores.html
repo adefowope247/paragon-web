@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% set active='cbt' %}
+{% block title %}Scores &middot; {{ test.title }}{% endblock %}
+{% block content %}
+<a class="back" href="/cbt">&larr; Back to CBT</a>
+<h1 class="page-title">Scores: {{ test.title }}</h1>
+<p class="page-sub">
+  {{ attempts|length }} attempt(s)
+  {% if test.link_target and test.link_target != 'none' %} &middot; linked to {{ test.link_target|upper }} for {{ test.link_subject }}{% endif %}
+</p>
+{% if pushed %}<div class="ok-banner">{{ pushed }}</div>{% endif %}
+{% if attempts %}
+<table>
+  <thead><tr><th>Student</th><th>Score</th><th>%</th><th>Status</th>{% if test.link_target and test.link_target!='none' %}<th></th>{% endif %}</tr></thead>
+  <tbody>
+  {% for a in attempts %}
+    <tr>
+      <td><strong>{{ a.full_name }}</strong><br><span style="color:var(--muted);font-size:12px">{{ a.admission_no or "" }}</span></td>
+      <td>{% if a.status=='done' %}{{ a.score }}/{{ a.total }}{% else %}—{% endif %}</td>
+      <td>{% if a.status=='done' and a.total %}{{ (a.score/a.total*100)|round(1) }}%{% else %}—{% endif %}</td>
+      <td>{% if a.status=='done' %}{% if a.pushed %}<span class="clear">Pushed</span>{% else %}<span style="color:#3b7dd8">Done</span>{% endif %}{% else %}<span class="owing">In progress</span>{% endif %}</td>
+      {% if test.link_target and test.link_target!='none' %}
+      <td>{% if a.status=='done' and not a.pushed %}
+        <form method="post" action="/cbt/push/{{ a.id }}" style="margin:0"><button class="btn btn-gold" style="padding:6px 12px">Send to score entry</button></form>
+      {% endif %}</td>
+      {% endif %}
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}<div class="card">No attempts yet.</div>{% endif %}
+{% endblock %}

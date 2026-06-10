@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% set active='dashboard' %}
+{% block title %}Dashboard &middot; ParagonEdu{% endblock %}
+{% block content %}
+<h1 class="page-title">Welcome, {{ user.name }}</h1>
+<p class="page-sub">{{ school.name }}{% if school.session %} &middot; {{ school.session }}{% endif %}{% if school.term %} &middot; {{ school.term }} term{% endif %}</p>
+<div class="stat-grid">
+  <div class="stat"><div class="n">{{ counts.students }}</div><div class="l">Students</div></div>
+  <div class="stat"><div class="n">{{ counts.staff }}</div><div class="l">Staff</div></div>
+  <div class="stat"><div class="n">{{ counts.classes }}</div><div class="l">Classes</div></div>
+  <div class="stat"><div class="n">{{ counts.subjects }}</div><div class="l">Subjects</div></div>
+</div>
+<div class="card" style="margin-top:18px">
+  <strong>This is the web version of ParagonEdu Suite.</strong>
+  <p style="color:var(--muted);margin:8px 0 0">Phase 1 brings your students online. Scores, fees, and results modules are coming next, each built to match the desktop app.</p>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ exam.title }} &middot; Exam in progress</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="exam-body">
+<div class="exam-bar">
+  <div class="exam-title">{{ exam.title }}{% if exam.subject %} &middot; {{ exam.subject }}{% endif %}</div>
+  <div id="timer" class="timer">--:--</div>
+</div>
+
+<div class="exam-wrap">
+  {% if exam.instructions %}<div class="exam-instr"><strong>Instructions:</strong> {{ exam.instructions }}</div>{% endif %}
+
+  {% if exam.mode == 'hybrid' %}
+  <div class="exam-instr" style="background:#fff7e6;border-color:#f0d99a">
+    <strong>Hybrid mode:</strong> Read each question on screen and write your answers on paper. Submit your paper to the teacher when time is up.
+  </div>
+  {% endif %}
+
+  <form id="examform" method="post" action="/theory/{{ exam.id }}/submit">
+    <input type="hidden" name="attempt_id" value="{{ attempt.id }}">
+    {% for q in questions %}
+      <div class="exam-q">
+        <div class="exam-qhead"><span class="qn">Q{{ loop.index }}</span> <span class="qmk">[{{ q.marks }} marks]</span></div>
+        <div class="exam-qtext">{{ q.question }}</div>
+        {% if exam.mode != 'hybrid' %}
+          <textarea name="ans_{{ q.id }}" class="exam-ans" rows="6" placeholder="Type your answer here...">{{ saved.get(q.id, {}).get('answer_text','') if saved.get(q.id) else '' }}</textarea>
+        {% endif %}
+      </div>
+    {% endfor %}
+    <div class="exam-actions">
+      <button class="btn btn-primary" type="submit" id="submitbtn">Submit exam</button>
+    </div>
+  </form>
+</div>
+
+<script>
+(function(){
+  var remaining = {{ remaining }};
+  var timerEl = document.getElementById('timer');
+  var form = document.getElementById('examform');
+  var submitted = false;
+
+  function fmt(s){
+    var m = Math.floor(s/60), ss = s%60;
+    return (m<10?'0':'')+m+':'+(ss<10?'0':'')+ss;
+  }
+  function tick(){
+    if(remaining <= 0){
+      timerEl.textContent = '00:00';
+      if(!submitted){ submitted = true; alert('Time is up. Your exam will be submitted.'); form.submit(); }
+      return;
+    }
+    timerEl.textContent = fmt(remaining);
+    if(remaining <= 60){ timerEl.classList.add('low'); }
+    remaining--;
+    setTimeout(tick, 1000);
+  }
+  tick();
+
+  form.addEventListener('submit', function(){ submitted = true; });
+  // warn on leaving
+  window.addEventListener('beforeunload', function(e){
+    if(!submitted){ e.preventDefault(); e.returnValue=''; }
+  });
+})();
+</script>
+</body>
+</html>

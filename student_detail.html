@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% set active='students' %}
+{% block title %}{{ s.full_name }} &middot; ParagonEdu{% endblock %}
+{% block content %}
+<a class="back" href="/students">&larr; Back to students</a>
+<div class="result-head">
+  <div>
+    <h1 class="page-title">{{ s.full_name }}</h1>
+    <p class="page-sub">{{ s.admission_no or "No admission number" }}{% if s.class_level %} &middot; {{ s.class_level }}{% endif %}</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    {% if user.role in ['admin','bursar'] %}<a class="btn btn-ghost" href="/students/{{ s.id }}/edit">Edit</a>{% endif %}
+    <a class="btn btn-gold" href="/students/{{ s.id }}/admission.pdf" target="_blank">Admission form PDF</a>
+  </div>
+</div>
+<div class="detail-grid">
+  <div class="row"><div class="k">Admission No</div><div class="v">{{ s.admission_no or "—" }}</div></div>
+  <div class="row"><div class="k">Class</div><div class="v">{{ s.class_level or "—" }}</div></div>
+  <div class="row"><div class="k">Gender</div><div class="v">{{ s.gender or "—" }}</div></div>
+  <div class="row"><div class="k">Date of birth</div><div class="v">{{ s.date_of_birth or "—" }}</div></div>
+  <div class="row"><div class="k">Parent / Guardian</div><div class="v">{{ s.parent_name or "—" }}</div></div>
+  <div class="row"><div class="k">Parent phone</div><div class="v">{{ s.parent_phone or "—" }}</div></div>
+</div>
+{% endblock %}

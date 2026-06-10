@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% set active='theory' %}
+{% block title %}Mark &middot; {{ student.full_name }}{% endblock %}
+{% block content %}
+<a class="back" href="/theory/{{ exam.id }}/scripts">&larr; Back to scripts</a>
+<h1 class="page-title">Marking: {{ student.full_name }}</h1>
+<p class="page-sub">{{ exam.title }}{% if exam.subject %} &middot; {{ exam.subject }}{% endif %}</p>
+{% if saved %}<div class="ok-banner">Marks saved. Score: {{ attempt.total_score }}/{{ attempt.total_marks }}.</div>{% endif %}
+
+<form method="post" action="/theory/mark/{{ attempt.id }}">
+  {% for q in questions %}
+    <div class="card" style="margin-bottom:14px">
+      <div class="exam-qhead"><span class="qn">Q{{ loop.index }}</span> <span class="qmk">[{{ q.marks }} marks]</span></div>
+      <div class="exam-qtext" style="margin:6px 0">{{ q.question }}</div>
+      {% if q.model_answer %}<div class="model">Model: {{ q.model_answer }}</div>{% endif %}
+      <div class="ans-box">{{ answers.get(q.id, {}).get('answer_text','') or '(no answer)' }}</div>
+      <div class="pay-row" style="margin-top:10px">
+        <div><label>Marks (max {{ q.marks }})</label>
+          <input type="number" name="mark_{{ q.id }}" min="0" max="{{ q.marks }}" step="0.5"
+                 value="{{ answers.get(q.id, {}).get('awarded','') if answers.get(q.id) and answers.get(q.id).get('awarded') is not none else '' }}"></div>
+        <div style="flex:1"><label>Note (optional)</label>
+          <input type="text" name="note_{{ q.id }}" value="{{ answers.get(q.id, {}).get('marker_note','') if answers.get(q.id) else '' }}"></div>
+      </div>
+    </div>
+  {% endfor %}
+  <button class="btn btn-primary" type="submit">Save marks & finalize</button>
+</form>
+{% endblock %}

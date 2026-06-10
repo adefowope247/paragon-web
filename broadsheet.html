@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% set active='broadsheet' %}
+{% block title %}Broadsheet &middot; ParagonEdu{% endblock %}
+{% block content %}
+<h1 class="page-title">Class Broadsheet</h1>
+<p class="page-sub">Whole-class results with totals, averages and positions</p>
+
+<form class="toolbar" method="get" action="/broadsheet">
+  <select name="class_level" onchange="this.form.submit()">
+    <option value="">— Pick a class —</option>
+    {% for c in classes %}<option value="{{ c }}" {{ 'selected' if c==selected_class }}>{{ c }}</option>{% endfor %}
+  </select>
+  {% if data %}<a class="btn btn-gold" href="/broadsheet/{{ selected_class }}/sheet.pdf" target="_blank">Download PDF</a>{% endif %}
+</form>
+
+{% if data %}
+  {% if data.rows %}
+  <div style="overflow-x:auto">
+  <table>
+    <thead><tr>
+      <th>#</th><th>Student</th>
+      {% for subj in data.subjects %}<th>{{ subj[:10] }}</th>{% endfor %}
+      <th>Total</th><th>Avg</th><th>Grade</th><th>Pos</th>
+    </tr></thead>
+    <tbody>
+    {% for r in data.rows %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td><strong>{{ r.name }}</strong></td>
+        {% for subj in data.subjects %}<td>{{ r.scores.get(subj) if r.scores.get(subj) != "" else "–" }}</td>{% endfor %}
+        <td><strong>{{ r.total }}</strong></td>
+        <td>{{ r.average }}</td>
+        <td>{% if r.grade %}<span class="g g-{{ r.grade }}">{{ r.grade }}</span>{% endif %}</td>
+        <td>{{ r.position }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <p class="page-sub" style="margin-top:12px">{{ data.rows|length }} students &middot; max total per subject {{ data.maxima.total }}</p>
+  {% else %}<div class="card">No students in {{ selected_class }}.</div>{% endif %}
+{% else %}
+<div class="card">Pick a class above to see its broadsheet.</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% set active='theory' %}
+{% block title %}Script &middot; {{ exam.title }}{% endblock %}
+{% block content %}
+<a class="back" href="/theory">&larr; Back</a>
+<h1 class="page-title">{{ exam.title }}</h1>
+<p class="page-sub">{{ student.full_name }}{% if exam.subject %} &middot; {{ exam.subject }}{% endif %}</p>
+
+{% if attempt.marked %}
+<div class="stat-grid" style="margin-bottom:18px">
+  <div class="stat"><div class="n">{{ attempt.total_score }}/{{ attempt.total_marks }}</div><div class="l">Score</div></div>
+</div>
+{% else %}
+<div class="card" style="margin-bottom:16px">Your script has been submitted and is awaiting marking.</div>
+{% endif %}
+
+{% for q in questions %}
+  <div class="card" style="margin-bottom:14px">
+    <div class="exam-qhead"><span class="qn">Q{{ loop.index }}</span> <span class="qmk">[{{ q.marks }} marks]</span>
+      {% if attempt.marked %}<span class="awarded">{{ answers.get(q.id, {}).get('awarded', 0) }}/{{ q.marks }}</span>{% endif %}
+    </div>
+    <div class="exam-qtext" style="margin:6px 0">{{ q.question }}</div>
+    <div class="ans-box">{{ answers.get(q.id, {}).get('answer_text','') or '(no answer)' }}</div>
+    {% if attempt.marked and answers.get(q.id, {}).get('marker_note') %}
+      <div class="model" style="margin-top:8px">Teacher's note: {{ answers.get(q.id).get('marker_note') }}</div>
+    {% endif %}
+  </div>
+{% endfor %}
+{% endblock %}

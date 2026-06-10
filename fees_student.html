@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% set active='fees' %}
+{% block title %}{{ s.student.full_name }} fees &middot; ParagonEdu{% endblock %}
+{% block content %}
+<a class="back" href="/fees">&larr; Back to fees</a>
+<h1 class="page-title">{{ s.student.full_name }}</h1>
+<p class="page-sub">{{ s.student.admission_no or "" }}{% if s.student.class_level %} &middot; {{ s.student.class_level }}{% endif %}
+  &middot; {{ s.session }}{% if s.term %} &middot; {{ s.term }} term{% endif %}</p>
+
+{% if saved %}<div class="ok-banner">Payment recorded. Receipt {{ receipt }}.</div>{% endif %}
+{% if errors %}
+<div class="err-banner"><strong>Payment not saved.</strong>
+<ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul></div>
+{% endif %}
+
+<div class="stat-grid" style="margin-bottom:18px">
+  <div class="stat"><div class="n">{{ naira(s.net_due) }}</div><div class="l">Due this term</div></div>
+  <div class="stat"><div class="n">{{ naira(s.paid) }}</div><div class="l">Paid</div></div>
+  <div class="stat"><div class="n">
+    {% if s.balance > 0 %}<span class="owing">{{ naira(s.balance) }}</span>
+    {% elif s.balance < 0 %}<span class="credit">{{ naira(s.balance) }}</span>
+    {% else %}<span class="clear">₦0</span>{% endif %}
+  </div><div class="l">Balance</div></div>
+</div>
+
+<div class="card" style="margin-bottom:18px">
+  <h3 style="margin:0 0 12px;font-size:16px">Record a payment</h3>
+  <form method="post" action="/fees/{{ s.student.id }}">
+    <div class="pay-row">
+      <div><label>Amount (₦)</label><input type="number" min="1" step="1" name="amount" required></div>
+      <div><label>Method</label>
+        <select name="method">
+          <option>Cash</option><option>Transfer</option><option>POS</option><option>Cheque</option>
+        </select>
+      </div>
+      <div><label>Date</label><input type="date" name="date" value="{{ today }}"></div>
+      <div style="flex:1"><label>Note (optional)</label><input type="text" name="note" placeholder="e.g. part payment"></div>
+    </div>
+    <button class="btn btn-primary" type="submit" style="margin-top:12px">Record payment</button>
+  </form>
+</div>
+
+<h3 style="font-size:16px;margin:0 0 10px">Payment history (this term)</h3>
+{% if s.payments %}
+<table>
+  <thead><tr><th>Date</th><th>Amount</th><th>Method</th><th>Receipt</th><th>Note</th></tr></thead>
+  <tbody>
+  {% for p in s.payments %}
+    <tr>
+      <td>{{ p.payment_date or "—" }}</td>
+      <td>{{ naira(p.amount_paid) }}</td>
+      <td>{{ p.payment_method or "—" }}</td>
+      <td>{{ p.receipt_no or "—" }}</td>
+      <td>{{ p.note or "" }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}<div class="card">No payments recorded this term.</div>{% endif %}
+{% endblock %}

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ test.title }} &middot; CBT</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="exam-body">
+<div class="exam-bar">
+  <div class="exam-title">{{ test.title }}</div>
+  <div id="timer" class="timer">--:--</div>
+</div>
+<div class="exam-wrap">
+  <form id="examform" method="post" action="{{ ("/start-cbt/" ~ test.id ~ "/submit") if staff_take else ("/cbt/" ~ test.id ~ "/submit") }}">
+    <input type="hidden" name="attempt_id" value="{{ attempt.id }}">
+    {% for q in questions %}
+      <div class="exam-q">
+        <div class="exam-qhead"><span class="qn">Q{{ loop.index }}</span>{% if q.subject %} <span class="qmk">{{ q.subject }}</span>{% endif %}</div>
+        <div class="exam-qtext">{{ q.question }}</div>
+        <div class="opts">
+          {% for opt in ['A','B','C','D'] %}
+            {% set val = q['option_' ~ opt|lower] %}
+            {% if val %}
+            <label class="opt"><input type="radio" name="q_{{ q.id }}" value="{{ opt }}"> <span class="ol">{{ opt }}</span> {{ val }}</label>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+    <div class="exam-actions"><button class="btn btn-primary" type="submit" id="submitbtn">Submit test</button></div>
+  </form>
+</div>
+<script>
+(function(){
+  var remaining={{ remaining }}, t=document.getElementById('timer'), f=document.getElementById('examform'), done=false;
+  function fmt(s){var m=Math.floor(s/60),ss=s%60;return (m<10?'0':'')+m+':'+(ss<10?'0':'')+ss;}
+  function tick(){
+    if(remaining<=0){t.textContent='00:00';if(!done){done=true;alert('Time is up. Submitting.');f.submit();}return;}
+    t.textContent=fmt(remaining); if(remaining<=60)t.classList.add('low'); remaining--; setTimeout(tick,1000);
+  }
+  tick();
+  f.addEventListener('submit',function(){done=true;});
+  window.addEventListener('beforeunload',function(e){if(!done){e.preventDefault();e.returnValue='';}});
+})();
+</script>
+</body>
+</html>

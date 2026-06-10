@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% set active='results' %}
+{% block title %}Results &middot; ParagonEdu{% endblock %}
+{% block content %}
+<h1 class="page-title">Results</h1>
+<p class="page-sub">Pick a student to view their result sheet</p>
+<form class="toolbar" method="get" action="/results">
+  <input type="text" name="q" placeholder="Search name or admission no" value="{{ search }}">
+  <select name="class_level" onchange="this.form.submit()">
+    {% for c in classes %}<option value="{{ c }}" {{ 'selected' if c==selected_class }}>{{ c }}</option>{% endfor %}
+  </select>
+  <button class="btn btn-primary" type="submit">Search</button>
+</form>
+{% if students %}
+<table>
+  <thead><tr><th>Name</th><th>Admission No</th><th>Class</th><th></th></tr></thead>
+  <tbody>
+  {% for s in students %}
+    <tr onclick="location.href='/results/{{ s.id }}'" style="cursor:pointer">
+      <td>{{ s.full_name }}</td>
+      <td>{{ s.admission_no or "—" }}</td>
+      <td><span class="badge">{{ s.class_level or "—" }}</span></td>
+      <td><a href="/results/{{ s.id }}">View result &rarr;</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}<div class="card">No students match.</div>{% endif %}
+{% endblock %}

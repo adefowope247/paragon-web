@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% set active='cbt' %}
+{% block title %}New CBT Test{% endblock %}
+{% block content %}
+<a class="back" href="/cbt">&larr; Back</a>
+<h1 class="page-title">New CBT Test — {{ preset.label }}</h1>
+<div class="card" style="max-width:680px">
+<form method="post" action="/cbt/new">
+  <input type="hidden" name="exam_type" value="{{ exam_type }}">
+  <div class="form-grid">
+    <div class="full"><label>Title *</label><input name="title" required placeholder="e.g. {{ preset.label }} — Week 5"></div>
+    <div><label>Class (optional)</label><input list="classlist" name="class_level"><datalist id="classlist">{% for c in classes %}<option value="{{ c }}">{% endfor %}</datalist></div>
+    <div><label>Questions per subject</label><input type="number" name="n_per_subject" value="{{ preset.per_subject }}" min="1"></div>
+    <div><label>Duration (minutes)</label><input type="number" name="duration_min" value="{{ preset.duration }}" min="1"></div>
+  </div>
+  <label style="display:block;font-size:13px;font-weight:600;margin:14px 0 6px">Subjects {% if exam_type=='jamb' %}(JAMB: pick up to 4){% endif %}</label>
+  {% if subjects %}
+  <div style="display:flex;flex-wrap:wrap;gap:10px">
+    {% for s in subjects %}
+      <label style="display:flex;align-items:center;gap:6px;background:#f0f3f8;padding:7px 12px;border-radius:8px;font-weight:500">
+        <input type="checkbox" name="subjects" value="{{ s }}"> {{ s }}
+      </label>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="card">No questions in the bank for {{ preset.label }} yet. <a href="/cbt/bank?exam_type={{ exam_type }}">Add some first</a>.</div>
+  {% endif %}
+
+  <div style="border-top:1px solid var(--line);margin:18px 0;padding-top:14px">
+    <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px">Link to academic results (optional)</label>
+    <p style="color:var(--muted);font-size:13px;margin:0 0 10px">After students take it, you can push their scores into a subject's CA/Exam (scaled to its max).</p>
+    <div class="form-grid">
+      <div><label>Fill which field?</label>
+        <select name="link_target">
+          <option value="none">Don't link</option>
+          <option value="ca1">CA1</option><option value="ca2">CA2</option><option value="exam">Exam</option>
+        </select></div>
+      <div><label>Academic subject</label>
+        <select name="link_subject">
+          <option value="">—</option>
+          {% for s in academic_subjects %}<option value="{{ s }}">{{ s }}</option>{% endfor %}
+        </select></div>
+    </div>
+  </div>
+  <button class="btn btn-primary" type="submit">Create test</button>
+</form>
+</div>
+{% endblock %}

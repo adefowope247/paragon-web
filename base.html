@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}ParagonEdu{% endblock %}</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="topbar">
+  <div class="brand">
+    <span class="mark"><img src="/school-logo" alt="" onerror="this.style.display='none';this.parentElement.textContent='P'"></span>
+    <span class="brand-text">
+      <span class="school-name">{{ school.name or "ParagonEdu" }}</span>
+      {% if school.motto %}<span class="school-motto">{{ school.motto }}</span>{% endif %}
+      {% if school.address %}<span class="school-contact">{{ school.address }}</span>{% endif %}
+      {% set _bits = [] %}
+      {% if school.phone %}{% set _ = _bits.append("☎ " ~ school.phone) %}{% endif %}
+      {% if school.email %}{% set _ = _bits.append("✉ " ~ school.email) %}{% endif %}
+      {% if school.website %}{% set _ = _bits.append("🌐 " ~ school.website) %}{% endif %}
+      {% if _bits %}<span class="school-contact">{{ _bits | join("  •  ") }}</span>{% endif %}
+    </span>
+  </div>
+  <div class="who">
+    <span>{{ user.name }} &middot; {{ user.role|capitalize }}</span>
+    <a href="/logout">Sign out</a>
+  </div>
+</div>
+<div class="shell">
+  <nav class="side">
+    <div class="sec">Overview</div>
+    <a href="/dashboard" class="{{ 'active' if active=='dashboard' }}">Dashboard</a>
+    {% if user.role != 'student' %}
+    <div class="sec">Students</div>
+    <a href="/students" class="{{ 'active' if active=='students' }}">Students</a>
+    {% endif %}
+    {% if user.role != 'student' %}
+    <div class="sec">Academics</div>
+    <a href="/scores" class="{{ 'active' if active=='scores' }}">Score Entry</a>
+    {% endif %}
+    <div class="sec">Exams</div>
+    <a href="/theory" class="{{ 'active' if active=='theory' }}">Theory Exams</a>
+    <a href="/cbt" class="{{ 'active' if active=='cbt' }}">CBT (Objectives)</a>
+    {% if user.role != 'student' %}<a href="/start-cbt" class="{{ 'active' if active=='startcbt' }}">Start CBT Exam</a>{% endif %}
+    {% if user.role != 'student' %}<a href="/generate" class="{{ 'active' if active=='generate' }}">AI Generator</a>{% endif %}
+    <div class="sec">Results</div>
+    <a href="/results" class="{{ 'active' if active=='results' }}">{{ 'My Result' if user.role=='student' else 'Results' }}</a>
+    {% if user.role != 'student' %}<a href="/broadsheet" class="{{ 'active' if active=='broadsheet' }}">Broadsheet</a>{% endif %}
+    {% if user.role in ['admin','bursar'] %}
+    <div class="sec">Finance</div>
+    <a href="/fees" class="{{ 'active' if active=='fees' }}">Fees</a>
+    <a href="/debtors" class="{{ 'active' if active=='debtors' }}">Debtors & Arrears</a>
+    <a href="/expenses" class="{{ 'active' if active=='expenses' }}">Expenses</a>
+    <a href="/accounts" class="{{ 'active' if active=='accounts' }}">Accounts & Report</a>
+    {% endif %}
+  </nav>
+  <main class="main">
+    {% block content %}{% endblock %}
+    <footer class="page-footer">Powered by Paragon Smart Learning Technologies Limited <span class="sep">|</span> 08131374585</footer>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% set active='expenses' %}
+{% block title %}Expenses &middot; ParagonEdu{% endblock %}
+{% block content %}
+<h1 class="page-title">Expenses</h1>
+<p class="page-sub">{{ school.session or "" }}{% if school.term %} &middot; {{ school.term }} term{% endif %}</p>
+{% if saved %}<div class="ok-banner">Expense recorded.</div>{% endif %}
+
+<div class="stat-grid" style="margin-bottom:16px">
+  <div class="stat"><div class="n">{{ naira(total) }}</div><div class="l">Total this term</div></div>
+  {% for c in by_cat[:3] %}<div class="stat"><div class="n">{{ naira(c.total) }}</div><div class="l">{{ c.category }}</div></div>{% endfor %}
+</div>
+
+<div class="card" style="margin-bottom:16px">
+  <h3 style="margin:0 0 12px;font-size:16px">Record an expense</h3>
+  <form method="post" action="/expenses">
+    <div class="form-grid">
+      <div class="full"><label>Title *</label><input name="title" placeholder="e.g. Exercise books for Primary 1" required></div>
+      <div><label>Date</label><input type="date" name="expense_date" value="{{ today }}"></div>
+      <div><label>Category</label><select name="category">{% for c in categories %}<option>{{ c }}</option>{% endfor %}</select></div>
+      <div><label>Amount (₦)</label><input type="number" name="amount" min="1" step="1" required></div>
+      <div><label>Payment method</label><select name="payment_method"><option>Cash</option><option>Transfer</option><option>POS</option><option>Cheque</option></select></div>
+      <div><label>Vendor / paid to</label><input name="vendor" placeholder="e.g. supplier name"></div>
+      <div><label>Receipt no (optional)</label><input name="receipt_no"></div>
+      <div class="full"><label>Note (optional)</label><input name="note"></div>
+    </div>
+    <button class="btn btn-primary" type="submit" style="margin-top:12px">Record expense</button>
+  </form>
+</div>
+
+<form class="toolbar" method="get" action="/expenses">
+  <select name="category" onchange="this.form.submit()">
+    <option value="All" {{ 'selected' if selected=='All' }}>All categories</option>
+    {% for c in categories %}<option value="{{ c }}" {{ 'selected' if c==selected }}>{{ c }}</option>{% endfor %}
+  </select>
+</form>
+
+{% if rows %}
+<table>
+  <thead><tr><th>Date</th><th>Title</th><th>Category</th><th>Vendor</th><th>Amount</th><th></th></tr></thead>
+  <tbody>
+  {% for r in rows %}
+    <tr>
+      <td>{{ r.expense_date }}</td>
+      <td><strong>{{ r.title or "—" }}</strong>{% if r.note %}<br><span style="color:var(--muted);font-size:12px">{{ r.note }}</span>{% endif %}</td>
+      <td><span class="badge">{{ r.category }}</span></td>
+      <td>{{ r.vendor or "—" }}</td>
+      <td><strong>{{ naira(r.amount) }}</strong></td>
+      <td><form method="post" action="/expenses/{{ r.id }}/delete" style="margin:0" onsubmit="return confirm('Delete this expense?')"><button class="btn btn-ghost" style="padding:4px 10px;font-size:12px">Delete</button></form></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}<div class="card">No expenses recorded this term yet.</div>{% endif %}
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% set active='debtors' %}
+{% block title %}Debtors & Arrears &middot; ParagonEdu{% endblock %}
+{% block content %}
+<h1 class="page-title">Debtors & Arrears</h1>
+<p class="page-sub">{{ school.session or "" }}{% if school.term %} &middot; {{ school.term }} term{% endif %} &middot; {{ data.count }} debtor(s)</p>
+
+<div class="stat-grid" style="margin-bottom:16px">
+  <div class="stat"><div class="n">{{ naira(data.tot_current) }}</div><div class="l">This term outstanding</div></div>
+  <div class="stat"><div class="n">{{ naira(data.tot_arrears) }}</div><div class="l">Arrears (past terms)</div></div>
+  <div class="stat"><div class="n">{{ naira(data.tot_all) }}</div><div class="l">Total owed</div></div>
+</div>
+
+<form class="toolbar" method="get" action="/debtors">
+  <input type="text" name="q" placeholder="Search name or admission no" value="{{ search }}">
+  <select name="class_level" onchange="this.form.submit()">
+    {% for c in classes %}<option value="{{ c }}" {{ 'selected' if c==selected_class }}>{{ c }}</option>{% endfor %}
+  </select>
+  <button class="btn btn-primary" type="submit">Search</button>
+</form>
+
+{% if data.rows %}
+<table>
+  <thead><tr><th>Student</th><th>Class</th><th>This term</th><th>Arrears</th><th>Total</th><th></th></tr></thead>
+  <tbody>
+  {% for r in data.rows %}
+    <tr>
+      <td><strong>{{ r.full_name }}</strong><br><span style="color:var(--muted);font-size:12px">{{ r.admission_no or "" }}</span></td>
+      <td><span class="badge">{{ r.class_level or "—" }}</span></td>
+      <td>{% if r.current > 0 %}<span class="owing">{{ naira(r.current) }}</span>{% else %}—{% endif %}</td>
+      <td>{% if r.arrears > 0 %}<span class="owing">{{ naira(r.arrears) }}</span>{% else %}—{% endif %}</td>
+      <td><strong>{{ naira(r.total) }}</strong></td>
+      <td style="white-space:nowrap">
+        <a href="/fees/{{ r.id }}">Open</a>
+        {% if r.wa %} &middot; <a href="{{ r.wa }}" target="_blank" style="color:#1ebe5b;font-weight:600">Remind</a>{% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}<div class="card">No debtors — everyone is paid up for this term and has no arrears. 🎉</div>{% endif %}
+{% endblock %}
